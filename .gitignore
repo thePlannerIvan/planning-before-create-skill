@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+venv/
+env/
+*.log
+_internal/
+output/
+outputs/
+dist/
+build/
+*.pptx
+*.key
+.env
+.env.*
+feedback.json

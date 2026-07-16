@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skill 审阅</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; line-height: 1.45; color: #1f2937; }
+    main { max-width: 920px; margin: 0 auto; }
+    section { border: 1px solid #d1d5db; border-radius: 8px; padding: 18px; margin: 16px 0; }
+    h1, h2 { margin-top: 0; }
+    textarea { width: 100%; min-height: 120px; font: inherit; }
+    button { padding: 10px 14px; border: 0; border-radius: 6px; background: #1f2937; color: white; cursor: pointer; }
+    .muted { color: #6b7280; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Skill 审阅</h1>
+  <p class="muted">把这里替换成 workflow map、开发计划或 eval 输出。导出的反馈可保存为 feedback.json。</p>
+  <section>
+    <h2>审阅项</h2>
+    <div id="content">在这里插入需要审阅的内容。</div>
+    <h3>反馈</h3>
+    <textarea id="feedback" placeholder="在这里写下聚焦反馈..."></textarea>
+  </section>
+  <button onclick="downloadFeedback()">导出 feedback.json</button>
+</main>
+<footer class="project-credit">
+  planning-before-create-skill © 2026 阿祖不看 TVC · <a href="https://demyth.info" target="_blank" rel="noreferrer">demyth.info</a>
+</footer>
+<script>
+function downloadFeedback() {
+  const payload = {
+    status: "complete",
+    reviews: [{ id: "review-item", feedback: document.getElementById("feedback").value, timestamp: new Date().toISOString() }]
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "feedback.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

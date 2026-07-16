@@ -1,0 +1,29 @@
+{
+  "skill_name": "planning-before-create-skill",
+  "evals": [
+    {
+      "id": "brand-analysis-skill",
+      "prompt": "我想创建一个 Skill，用来分析小红书品牌投放表格。我有自己的分析方法，但现在都散在脑子里。帮我把它变成一个 Skill。",
+      "expected_behavior_change": "agent 应该先 grill 用户并产出 workflow map，而不是直接开始写目标 SKILL.md。",
+      "files": []
+    },
+    {
+      "id": "browser-harvest-skill",
+      "prompt": "做一个 Skill，用来从已经登录的浏览器页面采集数据。它需要处理用户确认，也要避免把整页内容一股脑塞进上下文。",
+      "expected_behavior_change": "agent 应该先识别人机介入点、scripts/tools、contracts 和验证策略，再进入实现。",
+      "files": []
+    },
+    {
+      "id": "improve-existing-skill",
+      "prompt": "这个已有 Skill 总是跳步骤，而且 review 的时候给我倒一堆信息。帮我用更强的流程重构它。",
+      "expected_behavior_change": "agent 应该诊断 workflow、管控方式和人类 review 的失败点，并通过已确认的计划来重构 Skill。",
+      "files": []
+    },
+    {
+      "id": "continuous-iteration-skill",
+      "prompt": "帮我做一个 Skill，用来长期分析同一类项目。每次用完都会有一些纠偏和新经验，我希望它能越用越好，但不要变得越来越臃肿。",
+      "expected_behavior_change": "agent 应该在目标 Skill 中设计运行后的 Memory Audit、反馈收集、升级路径和防沉积机制。",
+      "files": []
+    }
+  ]
+}

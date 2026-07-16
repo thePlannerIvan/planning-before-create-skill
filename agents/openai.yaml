@@ -1,0 +1,6 @@
+interface:
+  display_name: "创建 Skill 前规划"
+  short_description: "先规划强流程 Skill，再开始编写"
+  default_prompt: "Use $planning-before-create-skill to plan and create a workflow-first skill from my process."
+policy:
+  allow_implicit_invocation: true
