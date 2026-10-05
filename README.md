@@ -1,25 +1,26 @@
 # Planning Before Create Skill
 
-在真正编写 `SKILL.md` 之前，把隐性工作方法变成经过确认的 workflow map、开发计划、验证计划和持续迭代机制。
+先判断任务需要 Patch、Lean 还是 System 级规划，再把隐性工作方法变成经过用户确认、能够验证和持续优化的 Skill。
 
 作者：阿祖不看 TVC  ·  [demyth.info](https://demyth.info)  ·  `Lawyif@163.com`
 
 ## 解决什么问题
 
-许多 Skill 不是写得不够长，而是没有把真实工作流、工具边界、人机介入点、输入输出合约和成功标准说清楚。本 Skill 强制先 grill，再做 workflow map 和开发/验证计划，最后才实现和验证目标 Skill。
+许多 Skill 不是写得不够长，而是没有把真实工作流、专业判断、工具边界、人机决定和成功标准说清楚。本 Skill 先还原工作流，再确认 workflow map、Stage、模型与脚本分工和验证计划，最后才实现目标 Skill。
+
+它不把“强流程”理解为更多文件、Contract 和脚本控制：语义任务给模型完整图景与判断框架，脚本只承担机械状态，Contract 只保护真正的机器交接。
 
 ## 核心流程
 
-1. Grill：提取工作步骤、分支、资料、工具、边界、人工检查点和成功标准。
-2. Workflow Map：把访谈结果转成可确认的流程图谱与输入输出合约。
-3. 开发与验证计划：规划 references、scripts、assets、evals 和 review 方式。
-4. 实现：保持 `SKILL.md` 精简，把详细知识下沉到配套资源。
-5. 验证：检查 frontmatter、文件结构、真实 prompt 行为和五类失败模式。
-6. 持续迭代：设计 Memory Audit、反馈收集、升级路径和防止内容沉积的机制。
+1. Triage：局部修改走 Patch，简单新建走 Lean，隐性方法、长流程或重大重构走 System。
+2. Grill：先读已有材料，再提取步骤、专业判断、失败方式、Gotchas 和边界。
+3. 设计确认：Lean 确认精简设计；System 确认 Workflow Map 和建设范围。
+4. 实现与验证：只创建必要资源，分别验证工程和真实语义行为。
+5. 运行后迭代：每次自检，只积累有证据的 Gotcha，周期优化时合并重复项并删除失效内容。
 
 ## 适合与不适合
 
-适合创建新 Skill、重构跳步骤的旧 Skill、设计需要人工确认的复杂流程，以及需要长期迭代但不想无限膨胀的 Skill。
+适合创建新 Skill、重构跳步骤的旧 Skill、设计需要人工确认的复杂流程，以及需要长期迭代但不想无限膨胀的 Skill。局部修改会自动走 Patch，不启动完整流程。
 
 不适合把一个简单提示词快速包装成 Skill，或在工作流尚未明确时直接生成最终实现。
 
@@ -41,7 +42,7 @@ git clone https://github.com/thePlannerIvan/planning-before-create-skill.git ~/.
 我想创建一个 Skill，用来分析小红书品牌投放表格。我有自己的分析方法，但现在都散在脑子里。帮我把它变成一个 Skill。
 ```
 
-期望行为：先 grill 并产出 workflow map，而不是直接开始写目标 `SKILL.md`。
+期望行为：选择 System 路线，先 grill 并产出 workflow map 供用户确认，而不是直接开始写目标 `SKILL.md`。
 
 ## 目录结构
 
@@ -51,7 +52,7 @@ planning-before-create-skill/
 ├── agents/openai.yaml
 ├── assets/review-page-template.html
 ├── evals/evals.json
-└── references/
+└── references/         # 按 Stage 或触发信号读取的方法文件
 ```
 
 ## 品牌与署名边界
@@ -62,7 +63,7 @@ planning-before-create-skill/
 
 ## 维护
 
-运行后优先记录具体反馈，再判断它应进入一次性项目产物、reference、脚本、Skill 本体还是 eval。每次升级都应重新执行结构检查和代表性 prompt 验证。
+每次运行后先做内部自检；只把有原始证据、会改变未来行为的 Gotcha 写入经用户确认的唯一长期位置。积累后按根因集中优化，同时合并重复项、删除失效规则和重跑代表性 Prompt。
 
 ## License
 

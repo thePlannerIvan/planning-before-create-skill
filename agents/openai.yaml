@@ -1,6 +1,6 @@
 interface:
   display_name: "创建 Skill 前规划"
-  short_description: "先规划强流程 Skill，再开始编写"
-  default_prompt: "Use $planning-before-create-skill to plan and create a workflow-first skill from my process."
+  short_description: "分流规划、确认设计并持续优化 Skill"
+  default_prompt: "使用 $planning-before-create-skill 先判断 Patch、Lean 或 System 路线，还原真实工作流、判断方法与 Gotchas，让我确认设计后再实现和验证。"
 policy:
   allow_implicit_invocation: true

@@ -1,46 +1,139 @@
+<!--
+  这是"决策确认页"的模板。两件事在交付前必须做完：
+    1. 替换 Decision / 核心内容 / 反馈去向（不要把通用占位页当成正式审阅）；
+    2. 内联设计令牌，否则页面没有任何样式，而且**不会报错**：
+         python3 <planners-review-core>/scripts/inline_review_tokens.py <本文件>
+       占位符是 /*__DSH_TOKENS__*/；令牌表只有一份，别把它复制进来。
+-->
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Skill 审阅</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; line-height: 1.45; color: #1f2937; }
-    main { max-width: 920px; margin: 0 auto; }
-    section { border: 1px solid #d1d5db; border-radius: 8px; padding: 18px; margin: 16px 0; }
-    h1, h2 { margin-top: 0; }
-    textarea { width: 100%; min-height: 120px; font: inherit; }
-    button { padding: 10px 14px; border: 0; border-radius: 6px; background: #1f2937; color: white; cursor: pointer; }
-    .muted { color: #6b7280; }
-  </style>
+  <title>Skill 决策审阅</title>
+  <style>/* ==========================================================================
+ * 观感：DSH 的设计令牌（公共接缝 planners-review-core 那一份），生成时内联进来。
+ * 这一页是"给人做决定的确认页"：读的是正文，所以字阶走正文档、留白偏松；
+ * 但控件（按钮/输入/边框/圆角/浮起/状态）一律用他们的语义 token，和别的审阅面一致。
+ * 模板里塞占位符，交付前跑一次：
+ *     python3 planners-review-core/scripts/inline_review_tokens.py <这一页>
+ * ========================================================================== */
+/*__DSH_TOKENS__*/
+* { box-sizing: border-box; }
+body { margin:0; background:var(--dsw-alias-bg-base); color:var(--dsw-alias-label-primary);
+       font:var(--dsw-font-s-14); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+::selection { background:var(--dsw-alias-bg-document-selection); }
+header, footer { padding:16px max(24px,calc((100vw - 980px)/2)); background:var(--dsw-alias-bg-layer-1);
+                 border-bottom:1px solid var(--dsw-alias-border-l1); }
+header { position:sticky; top:0; z-index:2; }
+footer { border-bottom:0; border-top:1px solid var(--dsw-alias-border-l1); }
+main { max-width:980px; margin:0 auto; padding:32px 24px 56px; }
+h1 { margin:0; font:var(--dsw-font-base-strong-16); }
+h2 { margin:0 0 12px; font:var(--dsw-font-l-20); }
+.decision { padding:20px 22px; margin-bottom:24px; border-radius:var(--dsw-radius-md);
+            background:var(--dsw-alias-state-warn-tertiary); border-left:3px solid var(--dsw-alias-state-warn-primary); }
+.card { padding:24px; margin:18px 0; border:1px solid var(--dsw-alias-border-l1);
+        border-radius:var(--dsw-radius-md); background:var(--dsw-alias-bg-layer-1); }
+.muted { color:var(--dsw-alias-label-secondary); }
+.choices { display:flex; gap:12px; flex-wrap:wrap; margin:18px 0; }
+label.choice { display:flex; gap:8px; align-items:center; padding:10px 14px; cursor:pointer;
+               border:1px solid var(--dsw-alias-border-l2); border-radius:var(--dsw-radius-sm);
+               background:var(--dsw-alias-bg-layer-1); transition:background var(--ds-transition-duration-fast) var(--ds-ease-in-out); }
+label.choice:hover { background:var(--dsw-alias-interactive-bg-hover); }
+label.choice:has(input:checked) { background:var(--dsw-alias-button-ghost-active-fill);
+                                  border-color:var(--dsw-alias-button-ghost-active-border); }
+textarea { width:100%; min-height:130px; padding:12px; font:inherit; resize:vertical;
+           border:1px solid var(--dsw-alias-border-l2); border-radius:var(--dsw-radius-sm);
+           background:var(--dsw-specific-input-major); color:var(--dsw-alias-label-primary); }
+details { margin-top:18px; padding-top:14px; border-top:1px solid var(--dsw-alias-border-l1); }
+button { height:28px; padding:0 12px; font:var(--dsw-font-xs-strong-13); cursor:pointer;
+         border:1px solid var(--dsw-alias-button-primary-fill);
+         border-radius:var(--dsw-radius-sm); background:var(--dsw-alias-button-primary-fill);
+         color:var(--dsw-alias-label-primary-foreground); }
+button:hover { background:var(--dsw-alias-button-primary-hover); border-color:var(--dsw-alias-button-primary-hover); }
+button.secondary { background:var(--dsw-alias-bg-layer-1); color:var(--dsw-alias-label-primary);
+                   border-color:var(--dsw-alias-border-l2); }
+button.secondary:hover { background:var(--dsw-alias-interactive-bg-hover); }
+a { color:var(--dsw-alias-link); }
+:focus-visible { outline:2px solid var(--dsw-static-blue-500); outline-offset:1px; }
+footer { font:var(--dsw-font-xxs-12); color:var(--dsw-alias-label-secondary); }
+footer a { color:var(--dsw-alias-link); }
+@media (prefers-color-scheme: dark) { body { color-scheme: dark; } }
+</style>
+<script>
+/* 明暗：token 表自带整套暗色（body[data-ds-dark-theme]）。iframe 里读不到宿主的设置，
+   所以跟随系统偏好 —— 也就是 DSH "system" 那一档；宿主若自己打了这个属性，这里不覆盖。 */
+(function(){
+  var apply=function(){
+    if(document.body&&!document.body.hasAttribute('data-ds-dark-theme')
+       &&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){
+      document.body.setAttribute('data-ds-dark-theme','');
+    }
+  };
+  // 这段可能出现在 <head> 里（那时还没有 body），所以要等 DOM 就绪再打属性。
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',apply);}else{apply();}
+})();
+</script>
 </head>
 <body>
+<header><h1>Skill 决策审阅</h1></header>
 <main>
-  <h1>Skill 审阅</h1>
-  <p class="muted">把这里替换成 workflow map、开发计划或 eval 输出。导出的反馈可保存为 feedback.json。</p>
-  <section>
-    <h2>审阅项</h2>
-    <div id="content">在这里插入需要审阅的内容。</div>
-    <h3>反馈</h3>
-    <textarea id="feedback" placeholder="在这里写下聚焦反馈..."></textarea>
+  <section class="decision">
+    <strong>你此刻需要决定：</strong>
+    <span id="decision">[替换为一个清楚、不可替代的用户决定]</span>
   </section>
-  <button onclick="downloadFeedback()">导出 feedback.json</button>
+
+  <section class="card">
+    <h2>[被审阅的核心内容]</h2>
+    <p class="muted">完整展示做决定所需的内容，不要用工程字段或过度摘要替代。</p>
+    <div id="review-content">[插入 Workflow Map、Stage、输出对比或完整内容]</div>
+
+    <details>
+      <summary>工程信息与来源</summary>
+      <div id="engineering-details">[只在需要时展开的文件路径、ID、来源和验证信息]</div>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>你的决定</h2>
+    <div class="choices">
+      <label class="choice"><input type="radio" name="decision-state" value="approve" checked> 通过</label>
+      <label class="choice"><input type="radio" name="decision-state" value="revise"> 需要修改</label>
+      <label class="choice"><input type="radio" name="decision-state" value="defer"> 暂不决定</label>
+    </div>
+    <label for="feedback"><strong>反馈</strong></label>
+    <textarea id="feedback" placeholder="输入反馈后会自动切换为“需要修改”"></textarea>
+    <p class="muted">“通过”可以是低风险默认状态；方向、合并目标、范围、承诺或不可逆操作必须改造成明确选择，不能沿用默认。</p>
+    <button type="button" onclick="downloadFeedback()">保存反馈</button>
+  </section>
 </main>
-<footer class="project-credit">
-  planning-before-create-skill © 2026 阿祖不看 TVC · <a href="https://demyth.info" target="_blank" rel="noreferrer">demyth.info</a>
+<footer>
+  planning-before-create-skill © 2026 阿祖不看 TVC ·
+  <a href="https://demyth.info" target="_blank" rel="noreferrer">demyth.info</a> ·
+  小红书：阿祖不看 TVC
 </footer>
 <script>
+const feedback = document.getElementById("feedback");
+feedback.addEventListener("input", () => {
+  if (feedback.value.trim()) {
+    document.querySelector('input[name="decision-state"][value="revise"]').checked = true;
+  }
+});
+
 function downloadFeedback() {
+  const selected = document.querySelector('input[name="decision-state"]:checked');
   const payload = {
-    status: "complete",
-    reviews: [{ id: "review-item", feedback: document.getElementById("feedback").value, timestamp: new Date().toISOString() }]
+    decision: document.getElementById("decision").textContent.trim(),
+    status: selected ? selected.value : null,
+    feedback: feedback.value.trim(),
+    timestamp: new Date().toISOString()
   };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "feedback.json";
-  a.click();
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "review-feedback.json";
+  link.click();
   URL.revokeObjectURL(url);
 }
 </script>
