@@ -1,6 +1,6 @@
 interface:
   display_name: "创建 Skill 前规划"
-  short_description: "分流规划、确认设计并持续优化 Skill"
-  default_prompt: "使用 $planning-before-create-skill 先判断 Patch、Lean 或 System 路线，还原真实工作流、判断方法与 Gotchas，让我确认设计后再实现和验证。"
+  short_description: "围绕 3+1 架构系统化规划、构建工具箱并验证 Skill"
+  default_prompt: "使用 $planning-before-create-skill 围绕 3+1 架构（O + KR + Tools + Playbook）深挖核心意图、高杠杆概念词、验收反例与确定性工具，对齐后完成生成与自动化质检。"
 policy:
   allow_implicit_invocation: true
