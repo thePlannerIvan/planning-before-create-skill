@@ -1,5 +1,43 @@
 # 升级历史记录：planning-before-create-skill
 
+## 2026-10-16：确定性门禁修复与减法审计补漏
+
+### 1. 升级原因
+一次真实项目运行暴露了三类问题，全部指向「判据写了但不可执行」：
+
+- **唯一的静态质检工具在它要服务的环境里必崩**：`lint_skill.py` 用 `py_compile.compile()`
+  做语法检查，它默认把 `.pyc` 写进 `~/Library/Caches/com.apple.python/`；沙箱/受限环境拒写该目录，
+  于是工具以 `PermissionError` 退出 1。**它从未跑出过任何真实发现。**
+- **工具名写错，且散落三处**：`SKILL.md`、`references/architecture.md`、
+  `references/maintenance-history.md` 都写作 `ask_question`，系统实际工具名是 `ask_user_question`。
+- **减法审计漏了 `evals/`**：`evals/evals.json` 的 `must_do`/`must_not_do` 仍在用上一轮
+  退役记录里已删除的词汇（Workflow Map / Contract / Stage 文件 / development-plan.md）。
+  跑这套 eval 等于把模型推回旧架构。
+
+### 2. 核心改动
+- **`scripts/lint_skill.py` 重写三处**：
+  - 语法检查改为**内存内编译**（`compile(source, path, "exec")`），不再落盘 → 沙箱可运行；
+  - 新增**导入冒烟**：语法合法但一 import 就炸的那一类（如 3.9 下的 `str | None` 标注）
+    只有真导入才暴露，`py_compile` 永远放行；
+  - 孤儿扫描从「只扫 `references/*.md`」扩到 `references/` + `assets/` + `scripts/` 三处；
+    新增 `evals/` 结构与指针校验（有 evals 却没指针 = 闭环缺失）。
+- **工具名一次性对齐**三处 → `ask_user_question`。
+- **`evals/evals.json` 全部改写**为现行词汇，并把「不得复活已退役概念」写进 `must_not_do`；
+  新增 `evals/runbook.md` 定义跑法与判据归属（判据只在 `evals.json`，跑法在 runbook）。
+- **`SKILL.md` description 收紧边界**：明确本 Skill 是**执行侧**规划器，
+  架构选型走 `creative-skill-architect`，消除两个 Skill 指针互相覆盖的歧义。
+- **里程碑 4 的表述与代码对齐**：原文称 lint 检查「未闭环指令」，实际没这个检查；
+  现按工具真正校验的六项改写。
+
+### 3. 减法审计（本轮实际删除/回收）
+- `assets/review-page-template.html`：**不是删除，是补指针**。它此前只出现在 `README.md`
+  的目录树里，`SKILL.md` 从不提它，于是成为孤儿。判定为「有效资产缺导航」而非「失效沉积」，
+  已在 `SKILL.md` 里程碑 1 与 `architecture.md` 模块表登记主人，并在 lint 中归类为孤儿检查对象。
+- 工具名与旧词汇的重复表述：全部收敛到单一出处的写法。
+- 本次升级**有增有删**：新增导入冒烟与 evals 校验、删除三处错误工具名与一整套废词汇表述。
+
+---
+
 ## 2026-10-12：SOP 范式向 OKR + 确定性工具箱范式重大重构
 
 ### 1. 升级原因
@@ -12,7 +50,7 @@
 - **确定性工具就位**：
   - 新增 `scripts/scaffold_skill.py`（自动化脚手架生成器）；
   - 新增 `scripts/lint_skill.py`（自动化静态质检工具）。
-- **Grill 原生复用**：废弃手写协议，直接复用系统 `/grill-me` 与 `ask_question`。
+- **Grill 原生复用**：废弃手写协议，直接复用系统 `/grill-me` 与 `ask_user_question`。
 
 ### 3. 减法审计（删除清单）
 彻底删除 7 个 SOP 流水线时期的历史沉淀文件：
