@@ -1,84 +1,75 @@
 {
   "skill_name": "planning-before-create-skill",
-  "_note": "2026-10-16 减法审计：本文件的 must_do/must_not_do 原先还在用 references/architecture.md 退役记录里已删除的词汇（Workflow Map / Contract / Stage 文件 / development-plan.md）。eval 里留着废词会把模型推回旧架构，所以一次性对齐到 3+1 现词汇。跑法见同目录 runbook.md。",
   "evals": [
     {
-      "id": "patch-description",
-      "prompt": "把这个已有 Skill 的 description 改得更容易触发，其他不要动。",
-      "route_expected": "patch",
-      "expected_behavior_change": "agent 说明这属于 Patch 且不需要重新设计工作流，只改 description 并做局部验证。",
+      "id": "create-minimal",
+      "prompt": "做一个小 Skill：用户输入中文文案后，只把全角逗号和句号改为半角，其他字符不动，直接返回结果。我已确认这个范围，请直接实现并验证。",
       "files": [],
       "must_do": [
-        "只修改用户指定的局部内容",
-        "验证 frontmatter 合规（name 与目录名一致、description 非空）"
+        "生成能指导指定转换的 Skill，并用包含非目标字符的样例验证",
+        "按需要选择最小结构，已有授权后直接执行"
       ],
       "must_not_do": [
-        "启动 /grill-me 探针",
-        "产出 OKR 蓝图或工具边界清单",
-        "重建 references/architecture.md"
+        "再要求确认已经明确的范围",
+        "要求填写整套架构表、阶段文件或空候选池"
       ]
     },
     {
-      "id": "lean-simple-skill",
-      "prompt": "做一个小 Skill：用户输入一段文案后，统一改成半角中文标点，不改文案内容。",
-      "route_expected": "lean",
-      "expected_behavior_change": "agent 判断无深层工具链依赖、走 Lean，用少量具体样例形成精简设计并请用户确认，再做最小实现与真实 Prompt 验收。",
+      "id": "create-tool",
+      "prompt": "做一个 Skill：把 CSV 订单按客户汇总金额，输出客户与总金额两列。输入列名是 customer 和 amount，金额按十进制计算；空客户、缺列或无效金额应报错。我已确认这些规则，请实现可复用工具并验证。",
       "files": [],
       "must_do": [
-        "实现前把精简设计（O / KR 判据 / 是否需要工具）说清楚并请用户确认",
-        "用至少一个真实 Prompt 验收"
+        "实现可实际调用的汇总工具，给出成功样例和失败样例的运行结果",
+        "正确处理十进制金额，失败有明确的非零退出信号"
       ],
       "must_not_do": [
-        "为标点替换这种死逻辑之外的路径硬造多个脚本",
-        "按 System 路线跑满四个里程碑"
+        "只写提示词而没有实现承诺的工具",
+        "为了有工具就引入全套里程碑和审阅页"
       ]
     },
     {
-      "id": "system-brand-analysis",
-      "prompt": "我想创建一个 Skill，用来分析小红书品牌投放表格。我有自己的分析方法，但现在都散在脑子里。帮我把它变成一个 Skill。",
-      "route_expected": "system",
-      "expected_behavior_change": "agent 先读用户已有材料、还原真实工作流并提取有证据的 Gotcha 候选，再把 OKR 蓝图、概念锚点与工具边界清单摆给用户确认；不直接动笔写 SKILL.md。",
-      "files": [],
+      "id": "upgrade-local",
+      "prompt": "只把 copy-edit 的 description 改得能准确触发中文标点整理任务，其他不要动。我确认这次只修改这一处，请直接完成。",
+      "files": [
+        "fixtures/copy-edit/SKILL.md"
+      ],
       "must_do": [
-        "先阅读用户已有材料",
-        "提取有证据的 Gotcha 候选",
-        "实现前请用户确认 OKR 蓝图与确定性工具边界"
+        "读取现有 Skill，只修改 description",
+        "验证 frontmatter 与原有标点转换行为"
       ],
       "must_not_do": [
-        "让用户重复回答材料里已经写明的问题",
-        "把需要专业判断的分析压缩成字段清单"
+        "改写任务正文或新建架构文档",
+        "要求用户重新解释已有材料"
       ]
     },
     {
-      "id": "system-subtractive-upgrade",
-      "prompt": "这个 Skill 改过很多轮，文件、脚本、references 和测试越来越多，指令开始互相冲突。请规划一次升级。",
-      "route_expected": "system",
-      "expected_behavior_change": "agent 除规划新设计外，还按 continuous-iteration.md 的减法审计清单归因根因，并列出孤儿脚本、失效链接、已废规则、过期 eval 与孤儿资产的删除或归档清单。",
-      "files": [],
+      "id": "upgrade-subtractive",
+      "prompt": "cluttered-skill 的规则开始冲突。请按实际用途精简，清理无用文件，保持标点转换结果不变；修改范围我已经确认，请直接完成并做前后对照。",
+      "files": [
+        "fixtures/cluttered-skill"
+      ],
       "must_do": [
-        "产出删除或归档清单，而不只是新增文件",
-        "用旧版与新版做行为对照",
-        "改一个事实前先全局搜索它的所有出现处，一次性对齐（单一真相源）"
+        "检查实际调用方，保留被 normalize.py 导入的 _punctuation.py 或等效能力",
+        "消除确认规则冲突、重复规则和无用途文件",
+        "用真实输入比较升级前后输出"
       ],
       "must_not_do": [
-        "只做加法、对旧资源不做审计",
-        "把同一根因的重复 Gotcha 转写成语义重复的多条规则"
+        "因为文档没提到 _punctuation.py 就判为死代码直接删除",
+        "把精简任务扩展为固定阶段模板"
       ]
     },
     {
-      "id": "post-run-gotcha-learning",
-      "prompt": "我的 Skill 已经能跑了，但我希望它每次用完都能总结真实问题，积累一段时间再集中升级，不要每次都往 Skill 里塞规则。",
-      "route_expected": "system",
-      "expected_behavior_change": "agent 按 continuous-iteration.md 设计运行后静默自检、双轨制记录（GOTCHAS.md 候选池 / references/maintenance-history.md 已决定历史）、同义合并、复现后升级与批量减法审计。",
+      "id": "learning-on-demand",
+      "prompt": "我的 Skill 已经能跑了。我希望真实问题先积累，攒够证据再集中升级；没有新发现就不要写运行总结。先给我一个简洁的维护办法，不要修改 Skill。",
       "files": [],
       "must_do": [
-        "说明双轨制：候选池与升级历史分开存放",
-        "没有新的、有证据的可复用发现时不留记录",
-        "升级时合并同义项并按减法审计清单清理失效内容"
+        "区分待确认发现和已生效规则，给出按证据归因的升级方式",
+        "按需记录，集中升级时检查失效内容"
       ],
       "must_not_do": [
-        "把每次运行日志都当成长期记忆写进 Skill",
-        "一次偶发失败就直接改写目标 Skill 的规则"
+        "未经请求修改 Skill",
+        "为没有发现的任务预建空候选文件",
+        "要求每次升级都必须删除文件"
       ]
     }
   ]

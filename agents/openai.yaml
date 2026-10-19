@@ -1,6 +1,6 @@
 interface:
-  display_name: "创建 Skill 前规划"
-  short_description: "围绕 3+1 架构系统化规划、构建工具箱并验证 Skill"
-  default_prompt: "使用 $planning-before-create-skill 围绕 3+1 架构（O + KR + Tools + Playbook）深挖核心意图、高杠杆概念词、验收反例与确定性工具，对齐后完成生成与自动化质检。"
+  display_name: "Skill 创建与升级"
+  short_description: "用于新建与升级 Skill 的轻量准则，按需设计工具、验证效果并清理冗余"
+  default_prompt: "使用 $planning-before-create-skill 创建或升级这个 Skill，明确目标与判据，按需使用工具并验证结果。"
 policy:
   allow_implicit_invocation: true
