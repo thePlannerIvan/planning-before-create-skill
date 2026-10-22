@@ -51,7 +51,9 @@ def check_evals(path):
         blob = json.loads(path.read_text(encoding="utf-8"))
     except (ValueError, OSError) as exc:
         return [f"evals JSON 无效：{exc}"]
-    cases = blob.get("evals") if isinstance(blob, dict) else blob
+    # `cases` 是库内已有的等价写法（planners-bypage / planners-ppt-hell 用它），
+    # 两种键都接受；形状校验不变。
+    cases = (blob.get("evals") or blob.get("cases")) if isinstance(blob, dict) else blob
     if not isinstance(cases, list) or not cases:
         return ["evals 必须是非空数组或包含非空 evals 数组的对象"]
     ids = set()
